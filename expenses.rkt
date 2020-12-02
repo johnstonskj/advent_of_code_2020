@@ -30,7 +30,7 @@
 ;; find-sum - the sum we are looking for
 ;; of - the number of values to sum and compare to find-sum
 (define (find-and-multiply values find-sum of)
-  (cond [(<= of 0)
+  (cond [(or (> of (vector-length values)) (<= of 0))
          '()]
         [else
          (let* (; limit is the largest value in the vector that could possibly be valid
