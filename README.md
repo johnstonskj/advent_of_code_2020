@@ -1,2 +1,2 @@
-# advent_of_code_2020
-Advent of code for 2020, or some of it at least
+# AOC 2020
+[Advent of Code](https://adventofcode.com/2020) for 2020, or some of it at least
