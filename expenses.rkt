@@ -1,16 +1,12 @@
 #lang racket/base
   
 (require racket/file racket/list racket/vector)
-(require data/heap)
+(require "./data.rkt")
 
 (provide load-values find-and-multiply)
 
 (define (load-values file-name)
-  (let ([values (make-heap <=)])
-    ; insert each value into the heap so create a sorted structure, 
-    ; cheaper than sorting a list/vector after the fact
-    (map (λ (s) (heap-add! values (string->number s))) (file->lines file-name))
-    (heap->vector values)))
+  (load-and-sort-data-from file-name string->number <=))
 
 (define (scan-and-multiply values length sum with of)
   (let next ([x 0])
