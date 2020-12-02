@@ -6,7 +6,7 @@
   (display "sum of ")
   (display of)
   (display " items ")
-  (let ([result (find-and-multiply (load-values "day_1_input.txt") 2020 of)])
+  (let ([result (find-and-multiply (load-expense-values "day_1_input.txt") 2020 of)])
   (if (list? result)
       (displayln (foldl * 1 result))
       (displayln "not found :("))))

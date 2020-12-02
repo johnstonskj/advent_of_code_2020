@@ -3,9 +3,9 @@
 (require racket/file racket/list racket/vector)
 (require "./data.rkt")
 
-(provide load-values find-and-multiply)
+(provide load-expense-values find-and-multiply)
 
-(define (load-values file-name)
+(define (load-expense-values file-name)
   (load-and-sort-data-from file-name string->number <=))
 
 (define (scan-and-multiply values length sum with of)
