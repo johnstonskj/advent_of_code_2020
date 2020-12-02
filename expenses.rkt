@@ -19,23 +19,26 @@
       (cond
         ; got a result
         [(and (= csum sum) (= of 1)) (list* xv with)]
-        ; no result here, look at the next ranl
+        ; no result here, look at the next rank
         [(> of 1)
          (let ([result (scan-and-multiply values length sum (list* xv with) (- of 1))])
-           (if (and (empty? result) (< x (- length 1)))
+           (if (and (empty? result) (< x length))
                (next (+ x 1))
                result))]
         ; no result, but wait, there's more
-        [(< x (- length 1)) (next (+ x 1))]
+        [(< x length) (next (+ x 1))]
         ; no result, and nothing left here
         [else '()]))))
 
-(define (find-and-multiply values sum of)
+;; values - a vector of numbers
+;; find-sum - the sum we are looking for
+;; of - the number of values to sum and compare to find-sum
+(define (find-and-multiply values find-sum of)
   (cond [(<= of 0)
          '()]
         [else
          (let* (; limit is the largest value in the vector that could possibly be valid
-                [limit (- sum (vector-ref values 0))]
+                [limit (- find-sum (vector-ref values 0))]
                 ; remove any value greater than limit
                 [values (vector-filter (λ (v) (<= v limit)) values)])
-           (scan-and-multiply values (vector-length values) sum (list) of))])) 
+           (scan-and-multiply values (- (vector-length values) 1) find-sum (list) of))])) 
