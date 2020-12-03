@@ -8,7 +8,7 @@ My only goal is to have fun, this means:
 * if I fall behind I'm not going to stress to catch up,
 * not trying to impress anyone, but do have friends taking part - 
   [swaits](https://git.sr.ht/~swaits/aoc2020/tree/master) and 
-  [Jenn](https://github.com/jenndox),
+  [Jenn](https://github.com/jenndox/AoC),
 * not optimizing, well not for speed or other efficiency,
 * want it to be readable for sure,
 * will try to make it idiomatic Racket and modular although I'll probably fail,
