@@ -27,7 +27,3 @@
                                next-col?)])
             (loop next-row next-col (if tree? (+ trees 1) trees)))
           trees))))
-
-(define tree-map (load-tree-map "day_3_input.txt"))
-
-(count-trees tree-map #:left 3 #:down 1)
