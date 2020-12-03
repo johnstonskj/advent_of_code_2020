@@ -25,3 +25,6 @@ My only goal is to have fun, this means:
 | 2   | `day_2_input.txt` | The problem input from the AOC web site. |
 | 2   | `day_2.rkt` | Main for part one and two. |
 | 2   | `passwords.rkt` | Logic for problem. |
+| 3   | `day_3_input.txt` | The problem input from the AOC web site. |
+| 3   | `day_3.rkt` | Main for part one and two. |
+| 3   | `tree-map.rkt` | Logic for problem. |
