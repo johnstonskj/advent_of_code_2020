@@ -14,14 +14,14 @@
 (define (tree-at? map row col)
   (vector-ref (vector-ref map row) col))
 
-(define (count-trees map #:left left #:down down)
+(define (count-trees map #:right right #:down down)
   (let ([depth (vector-length map)]
         [width (vector-length (vector-ref map 0))])
     (let loop ([row 0] [col 0] [trees 0])
       (if (< row depth)
           (let* ([tree? (tree-at? map row col)]
                  [next-row (+ row down)]
-                 [next-col? (+ col left)]
+                 [next-col? (+ col right)]
                  [next-col (if (>= next-col? width)
                                (- next-col? width)
                                next-col?)])
