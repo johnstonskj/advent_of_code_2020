@@ -1,6 +1,6 @@
 #lang racket/base
 
-(require racket/file racket/list)
+(require racket/file racket/list racket/string)
 
 (provide load-ticket-data make-airplane airplane-rows airplane-cols make-seat seat-col seat-row seat-num valid-ticket? ticket->seat)
 
@@ -16,11 +16,15 @@
 
 (define *invalid-configuration* 'INVALID-AIRPLANE-CONFIGURATION)
 
+(define *max-rows* 500)
+
+(define *max-cols* 25)
+
 (define (make-airplane rows cols)
   (if (and (> rows 0)
-           (< rows 500)
+           (< rows *max-rows*)
            (> cols 0)
-           (< cols 25))
+           (< cols *max-cols*))
       (airplane rows (inexact->exact (log rows 2)) cols (inexact->exact (log cols 2)))
       *invalid-configuration*))
 
@@ -41,14 +45,19 @@
 
 ; ------------------------------------------------------------------------------------------
 
+(define *fore* #\F)
+(define *back* #\B)
+(define *left* #\L)
+(define *right* #\R)
+
 (define *invalid-ticket* 'INVALID-TICKET)
 
 (define (valid-ticket? ap ticket)
   (let ([chars (string->list ticket)])
     (and
      (= (length chars) (+ (airplane-rdiv ap) (airplane-cdiv ap))) 
-     (for/and ([c (take chars (airplane-rdiv ap))]) (or (char=? c #\B) (char=? c #\F)))
-     (for/and ([c (drop chars (airplane-rdiv ap))]) (or (char=? c #\L) (char=? c #\R))))))
+     (for/and ([c (take chars (airplane-rdiv ap))]) (or (char=? c *back*) (char=? c *fore*)))
+     (for/and ([c (drop chars (airplane-rdiv ap))]) (or (char=? c *left*) (char=? c *right*))))))
 
 (define (ticket->seat ap ticket)
   (if (not (valid-ticket? ap ticket))
@@ -56,9 +65,9 @@
       (let*  ([chars (string->list ticket)]
               [rows (take chars (airplane-rdiv ap))]
               [cols (drop chars (airplane-rdiv ap))])
-      (make-seat ap
-                 (bsp-find rows #\F #\B 0 (- (airplane-rows ap) 1))
-                 (bsp-find cols #\L #\R 0 (- (airplane-cols ap) 1))))))
+        (make-seat ap
+                   (bsp-find rows *fore* *back* 0 (- (airplane-rows ap) 1))
+                   (bsp-find cols *left* *right* 0 (- (airplane-cols ap) 1))))))
 
 (define (bsp-find lst low high min max)
   (if (= (length lst) 1)
@@ -68,6 +77,26 @@
       (if (char=? (first lst) low)
           (bsp-find (drop lst 1) low high min (inexact->exact (+ min (floor (/ (- max min) 2)))))
           (bsp-find (drop lst 1) low high (inexact->exact (+ min (ceiling (/ (- max min) 2)))) max))))
+
+(define (seat->ticket ap seat)
+  (string-join
+   (list (bsp-encode (seat-row seat) *fore* *back* 0 (- (airplane-rows ap) 1))
+         (bsp-encode (seat-col seat) *left* *right* 0 (- (airplane-cols ap) 1)))
+   ""))
+
+(define (bsp-encode n low high min max [path '()])
+  (cond
+    [(= min max n) (reverse (list* low path))]
+    [(= (- max min) 1)
+     (if (= min n)
+         (list->string (reverse (list* low path)))
+         (list->string (reverse (list* high path))))]
+    [else
+     (let ([mid (inexact->exact (+ min (/ (- max min) 2)))])
+       (if (< n mid)
+           (bsp-encode n low high min (floor mid) (list* low path))
+           (bsp-encode n low high (ceiling mid) max (list* high path)))
+       )]))
 
 ; ------------------------------------------------------------------------------------------
 
@@ -97,3 +126,11 @@
    (check-eq? (seat-row seat) 44)
    (check-eq? (seat-col seat) 5)
    (check-eq? (seat-num seat) 357)))
+
+
+(test-case
+ "Check seat to ticket"
+ (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 44 5)) "FBFBBFFRLR")
+ (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 70 7)) "BFFFBBFRRR")
+ (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 14 7)) "FFFBBBFRRR")
+ (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 102 4)) "BBFFBBFRLL"))
