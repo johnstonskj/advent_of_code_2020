@@ -71,9 +71,29 @@
 
 ; ------------------------------------------------------------------------------------------
 
-;(define ap (make-airplane 128 8))
-;
-;(ticket->seat ap "FBFBBFFRLR")
-;(ticket->seat ap "BFFFBBFRRR")
-;(ticket->seat ap "FFFBBBFRRR")
-;(ticket->seat ap "BBFFBBFRLL")
+(require rackunit)
+
+(test-case
+ "Check make airplane"
+ (let ([ap (make-airplane 128 8)])
+   (check-eq? (airplane-rows ap) 128)
+   (check-eq? (airplane-rdiv ap) 7)
+   (check-eq? (airplane-cols ap) 8)
+   (check-eq? (airplane-cdiv ap) 3)))
+
+(define *test-ap* (make-airplane 128 8))
+
+(test-case
+ "Check ticket valid"
+ (check-true (valid-ticket? *test-ap* "FBFBBFFRLR"))
+ (check-false (valid-ticket? *test-ap* "FBFBBFRLR"))
+ (check-false (valid-ticket? *test-ap* "FBFBBFFRLRR"))
+ (check-false (valid-ticket? *test-ap* "FBFRBFFRLR"))
+ (check-false (valid-ticket? *test-ap* "FBFBBFFRBR")))
+
+(test-case
+ "Check ticket to seat"
+ (let ([seat (ticket->seat *test-ap* "FBFBBFFRLR")])
+   (check-eq? (seat-row seat) 44)
+   (check-eq? (seat-col seat) 5)
+   (check-eq? (seat-num seat) 357)))
