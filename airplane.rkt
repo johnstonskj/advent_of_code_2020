@@ -88,9 +88,9 @@
   (cond
     [(= min max n) (reverse (list* low path))]
     [(= (- max min) 1)
-     (if (= min n)
-         (list->string (reverse (list* low path)))
-         (list->string (reverse (list* high path))))]
+     (list->string (reverse (if (= min n)
+         (list* low path)
+         (list* high path))))]
     [else
      (let ([mid (inexact->exact (+ min (/ (- max min) 2)))])
        (if (< n mid)
