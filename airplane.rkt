@@ -2,8 +2,7 @@
 
 (require racket/file racket/list racket/string)
 
-(provide load-ticket-data
-         ; Airplane
+(provide ; Airplane
          *invalid-configuration*
          make-airplane
          airplane-rows
@@ -15,14 +14,10 @@
          seat-row
          seat-num
          ; Ticket
+         load-ticket-data
          *invalid-ticket*
          valid-ticket?
          ticket->seat)
-
-; ------------------------------------------------------------------------------------------
-
-(define (load-ticket-data file-name)
-  (file->lines file-name))
 
 ; ------------------------------------------------------------------------------------------
 
@@ -59,6 +54,10 @@
       *invalid-seat*))
 
 ; ------------------------------------------------------------------------------------------
+
+
+(define (load-ticket-data file-name)
+  (file->lines file-name))
 
 (define *fore* #\F)
 (define *back* #\B)
