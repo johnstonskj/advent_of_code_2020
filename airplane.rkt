@@ -2,7 +2,22 @@
 
 (require racket/file racket/list racket/string)
 
-(provide load-ticket-data make-airplane airplane-rows airplane-cols make-seat seat-col seat-row seat-num valid-ticket? ticket->seat)
+(provide load-ticket-data
+         ; Airplane
+         *invalid-configuration*
+         make-airplane
+         airplane-rows
+         airplane-cols
+         ; Seats
+         *invalid-seat*
+         make-seat
+         seat-col
+         seat-row
+         seat-num
+         ; Ticket
+         *invalid-ticket*
+         valid-ticket?
+         ticket->seat)
 
 ; ------------------------------------------------------------------------------------------
 
@@ -89,8 +104,8 @@
     [(= min max n) (reverse (list* low path))]
     [(= (- max min) 1)
      (list->string (reverse (if (= min n)
-         (list* low path)
-         (list* high path))))]
+                                (list* low path)
+                                (list* high path))))]
     [else
      (let ([mid (inexact->exact (+ min (/ (- max min) 2)))])
        (if (< n mid)
