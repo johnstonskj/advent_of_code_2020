@@ -3,7 +3,8 @@
 (require racket/set racket/string)
 (require "./data.rkt")
 
-(provide load-customs-data group-unique group-union-count group-intersect-count group->string group->list group->lists)
+(provide load-customs-data group-unique group-union-count group-intersect-count
+         group->string group->list group->lists)
 
 ; ------------------------------------------------------------------------------------------
 
