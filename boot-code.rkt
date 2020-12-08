@@ -12,8 +12,22 @@
 (define *nop* 0)
 (define *acc* 1)
 (define *jmp* 2)
-
 (define *err* 255)
+
+(define *nop-str* "nop")
+(define *acc-str* "acc")
+(define *jmp-str* "jmp")
+(define *err-str* "ERR")
+
+(define *instruction->str*
+  (make-hash (list (cons *nop* *nop-str*)
+                   (cons *acc* *acc-str*)
+                   (cons *jmp* *jmp-str*))))
+
+(define *str->instruction*
+  (make-hash (list (cons *nop-str* *nop*)
+                   (cons *acc-str* *acc*)
+                   (cons *jmp-str* *jmp*))))
 
 ; ------------------------------------------------------------------------------------------
 
@@ -29,11 +43,7 @@
 (define (assemble-line line)
   (let ([parsed  (regexp-match #px"^\\s*([a-z]+)\\s+([+-]\\d+)\\s*$" line)])
     (if (list? parsed)
-        (list (match (second parsed)
-                ["nop" *nop*]
-                ["acc" *acc*]
-                ["jmp" *jmp*]
-                [else *err*])
+        (list (hash-ref *str->instruction* (second parsed) *err*)
               (string->number (third parsed)))
         (list *err* 0))))
   
@@ -48,11 +58,7 @@
       #f))
 
 (define (disassemble-instruction instruction)
-  (cond
-    [(= instruction *nop*) "nop"]
-    [(= instruction *acc*) "acc"]
-    [(= instruction *jmp*)"jmp"]
-    [else (display "ERR")]))
+  (hash-ref *instruction->str* instruction *err-str*))
 
 ; (tracefn pc instruction operand)
 (define (execute memory
@@ -65,16 +71,16 @@
               (when (procedure? tracefn)
                 (tracefn pc instruction operand (~r acc)))
               (if (or (false? breakfn) (and (procedure? breakfn) (breakfn pc instruction operand)))
-                (apply next-instruction
-                       (append
-                        (cond
-                          [(= instruction *nop*) (list (+ pc *instruction-size*) acc end)]
-                          [(= instruction *acc*) (list (+ pc *instruction-size*) (+ acc operand) end)]
-                          [(= instruction *jmp*) (list (+ pc (* operand *instruction-size*)) acc end)]
-                          [else (displayln "PANIC")
-                                (list end acc end)])
-                        (list (+ count 1))))
-              acc))
+                  (apply next-instruction
+                         (append
+                          (cond
+                            [(= instruction *nop*) (list (+ pc *instruction-size*) acc end)]
+                            [(= instruction *acc*) (list (+ pc *instruction-size*) (+ acc operand) end)]
+                            [(= instruction *jmp*) (list (+ pc (* operand *instruction-size*)) acc end)]
+                            [else (displayln "PANIC")
+                                  (list end acc end)])
+                          (list (+ count 1))))
+                  acc))
             acc))
       #f))
 
