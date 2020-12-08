@@ -4,9 +4,13 @@
 
 (provide (struct-out policy) load-password-values policy-evaluate-all)
 
+; ------------------------------------------------------------------------------------------
+
 (struct policy
   (min max character)
   #:transparent)
+
+; ------------------------------------------------------------------------------------------
 
 (define (load-password-values file-name)
   (load-data-from file-name password-check-parse))

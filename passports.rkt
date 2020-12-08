@@ -5,6 +5,8 @@
 
 (provide load-passport-data passport-valid?)
 
+; ------------------------------------------------------------------------------------------
+
 (define *field-sep* " ")
 
 (define *key-sep* ":")
@@ -12,6 +14,8 @@
 (define *optional* "cid")
 
 (define *all-required-keys* "byr-ecl-eyr-hcl-hgt-iyr-pid")
+
+; ------------------------------------------------------------------------------------------
 
 (define (load-passport-data file-name)
   (load-chunked-data-from "day_4_input.txt" (λ (s) s)))

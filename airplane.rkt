@@ -3,21 +3,21 @@
 (require racket/file racket/list racket/string)
 
 (provide ; Airplane
-         *invalid-configuration*
-         make-airplane
-         airplane-rows
-         airplane-cols
-         ; Seats
-         *invalid-seat*
-         make-seat
-         seat-col
-         seat-row
-         seat-num
-         ; Ticket
-         load-ticket-data
-         *invalid-ticket*
-         valid-ticket?
-         ticket->seat)
+ *invalid-configuration*
+ make-airplane
+ airplane-rows
+ airplane-cols
+ ; Seats
+ *invalid-seat*
+ make-seat
+ seat-col
+ seat-row
+ seat-num
+ ; Ticket
+ load-ticket-data
+ *invalid-ticket*
+ valid-ticket?
+ ticket->seat)
 
 ; ------------------------------------------------------------------------------------------
 
@@ -115,35 +115,39 @@
 
 (require rackunit)
 
-(test-case
- "Check make airplane"
- (let ([ap (make-airplane 128 8)])
-   (check-eq? (airplane-rows ap) 128)
-   (check-eq? (airplane-rdiv ap) 7)
-   (check-eq? (airplane-cols ap) 8)
-   (check-eq? (airplane-cdiv ap) 3)))
+(define airplane-tests
+  (test-suite
+   "Airplane test suite"
+   
+   (test-case
+    "Check make airplane"
+    (let ([ap (make-airplane 128 8)])
+      (check-eq? (airplane-rows ap) 128)
+      (check-eq? (airplane-rdiv ap) 7)
+      (check-eq? (airplane-cols ap) 8)
+      (check-eq? (airplane-cdiv ap) 3)))
 
-(define *test-ap* (make-airplane 128 8))
+   (test-case
+    "Check ticket valid"
+    (let ([*test-ap* (make-airplane 128 8)])
+      (check-true (valid-ticket? *test-ap* "FBFBBFFRLR"))
+      (check-false (valid-ticket? *test-ap* "FBFBBFRLR"))
+      (check-false (valid-ticket? *test-ap* "FBFBBFFRLRR"))
+      (check-false (valid-ticket? *test-ap* "FBFRBFFRLR"))
+      (check-false (valid-ticket? *test-ap* "FBFBBFFRBR"))))
 
-(test-case
- "Check ticket valid"
- (check-true (valid-ticket? *test-ap* "FBFBBFFRLR"))
- (check-false (valid-ticket? *test-ap* "FBFBBFRLR"))
- (check-false (valid-ticket? *test-ap* "FBFBBFFRLRR"))
- (check-false (valid-ticket? *test-ap* "FBFRBFFRLR"))
- (check-false (valid-ticket? *test-ap* "FBFBBFFRBR")))
-
-(test-case
- "Check ticket to seat"
- (let ([seat (ticket->seat *test-ap* "FBFBBFFRLR")])
-   (check-eq? (seat-row seat) 44)
-   (check-eq? (seat-col seat) 5)
-   (check-eq? (seat-num seat) 357)))
+   (test-case
+    "Check ticket to seat"
+    (let* ([*test-ap* (make-airplane 128 8)] [seat (ticket->seat *test-ap* "FBFBBFFRLR")])
+      (check-eq? (seat-row seat) 44)
+      (check-eq? (seat-col seat) 5)
+      (check-eq? (seat-num seat) 357)))
 
 
-(test-case
- "Check seat to ticket"
- (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 44 5)) "FBFBBFFRLR")
- (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 70 7)) "BFFFBBFRRR")
- (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 14 7)) "FFFBBBFRRR")
- (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 102 4)) "BBFFBBFRLL"))
+   (test-case
+    "Check seat to ticket"
+    (let ([*test-ap* (make-airplane 128 8)])
+    (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 44 5)) "FBFBBFFRLR")
+    (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 70 7)) "BFFFBBFRRR")
+    (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 14 7)) "FFFBBBFRRR")
+    (check-equal? (seat->ticket *test-ap* (make-seat *test-ap* 102 4)) "BBFFBBFRLL")))))

@@ -33,19 +33,23 @@
 
 (require rackunit)
 
-(test-case
- "Check union count"
- (check-equal? (group-union-count '("abc")) 3)
- (check-equal? (group-union-count '("a" "b" "c")) 3)
- (check-equal? (group-union-count '("ab" "bc")) 3)
- (check-equal? (group-union-count '("a" "a" "a" "a")) 1)
- (check-equal? (group-union-count '("b")) 1))
+(define customs-tests
+  (test-suite
+   "Customs test suite"
+  
+   (test-case
+    "Check union count"
+    (check-equal? (group-union-count '("abc")) 3)
+    (check-equal? (group-union-count '("a" "b" "c")) 3)
+    (check-equal? (group-union-count '("ab" "bc")) 3)
+    (check-equal? (group-union-count '("a" "a" "a" "a")) 1)
+    (check-equal? (group-union-count '("b")) 1))
 
 
-(test-case
- "Check intersect count"
- (check-equal? (group-intersect-count '("abc")) 3)
- (check-equal? (group-intersect-count '("a" "b" "c")) 0)
- (check-equal? (group-intersect-count '("ab" "bc")) 1)
- (check-equal? (group-intersect-count '("a" "a" "a" "a")) 1)
- (check-equal? (group-intersect-count '("b")) 1))
+   (test-case
+    "Check intersect count"
+    (check-equal? (group-intersect-count '("abc")) 3)
+    (check-equal? (group-intersect-count '("a" "b" "c")) 0)
+    (check-equal? (group-intersect-count '("ab" "bc")) 1)
+    (check-equal? (group-intersect-count '("a" "a" "a" "a")) 1)
+    (check-equal? (group-intersect-count '("b")) 1))))

@@ -119,15 +119,19 @@
 
 (require rackunit)
 
-(test-case
- "assemble single line"
- (check-equal? (assemble-line "acc +2") '(1 2)))
+(define boot-code-tests
+  (test-suite
+   "Boot Code test suite"
+ 
+   (test-case
+    "assemble single line"
+    (check-equal? (assemble-line "acc +2") '(1 2)))
 
-;(test-case
-; "Check execute"
-; (check-equal?
-;  (execute
-;   (assemble-code
-;    '("nop +0" "acc +1" "jmp +4" "acc +3" "jmp -3" "acc -99" "acc +1" "jmp -4" "acc +6"))
-;   #:limit 20)
-;  16))
+   (test-case
+    "Check execute"
+    (check-equal?
+     (execute
+      (assemble-code
+       '("nop +0" "acc +1" "jmp +4" "acc +3" "jmp -3" "acc -99" "acc +1" "jmp -4" "acc +6"))
+      #:limit 20)
+     16))))

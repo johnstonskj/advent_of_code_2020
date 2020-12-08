@@ -5,6 +5,8 @@
 
 (provide load-tree-map count-trees)
 
+; ------------------------------------------------------------------------------------------
+
 (define (load-tree-map file-name)
   (list->vector (load-data-from file-name string->tree-line)))
 

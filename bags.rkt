@@ -59,16 +59,20 @@
 
 (require rackunit)
 
-(test-case
- "Decode a single line"
- (check-equal?
-  (bag-decode "plaid magenta bags contain 2 clear lavender bags, 3 clear teal bags, 4 vibrant gold bags.")
-  '("plaid magenta" (2 "clear lavender") (3 "clear teal") (4 "vibrant gold")))
- (check-equal?
-  (bag-decode "dotted lavender bags contain no other bags.")
-  '("dotted lavender" ())))
+(define bags-tests
+  (test-suite
+   "Bags test suite"
+   
+   (test-case
+    "Decode a single line"
+    (check-equal?
+     (bag-decode "plaid magenta bags contain 2 clear lavender bags, 3 clear teal bags, 4 vibrant gold bags.")
+     '("plaid magenta" (2 "clear lavender") (3 "clear teal") (4 "vibrant gold")))
+    (check-equal?
+     (bag-decode "dotted lavender bags contain no other bags.")
+     '("dotted lavender" ())))
 
-(test-case
- "pivot"
- (check-equal? (hash->list (pivot-bag-data '(("foo" (2 "bar") (1 "baz")) ("baz" (1 "bar")))))
-               '(("bar" . ("foo" "baz")) ("baz" . ("foo")))))
+   (test-case
+    "pivot"
+    (check-equal? (hash->list (pivot-bag-data '(("foo" (2 "bar") (1 "baz")) ("baz" (1 "bar")))))
+                  '(("bar" . ("foo" "baz")) ("baz" . ("foo")))))))
