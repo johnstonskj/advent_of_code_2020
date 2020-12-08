@@ -16,5 +16,7 @@
          (set-add! seen-pc pc)
          #t]))))
 
-(display "value of acumulator: "
+(display "value of acumulator: ")
 (displayln (execute memory #:break (make-break-on-loop)))
+
+(display "value of acumulator: ")

@@ -59,7 +59,7 @@
                  #:start [start 0] #:trace [tracefn #f] #:break [breakfn #f] #:limit [limit #f])
   (if (and (vector? memory) (< start (vector-length memory)))
       (let next-instruction ([pc start] [acc 0] [end (vector-length memory)] [count 0])
-        (when (and (< pc end) (or (false? limit) (and (number? limit) (< count limit))))
+        (if (and (< pc end) (or (false? limit) (and (number? limit) (< count limit))))
             (let ([instruction (vector-ref memory pc)]
                   [operand (vector-ref memory (+ pc 1))])
               (when (procedure? tracefn)
@@ -74,8 +74,8 @@
                           [else (displayln "PANIC")
                                 (list end acc end)])
                         (list (+ count 1))))
-              acc)
-            )))
+              acc))
+            acc))
       #f))
 
 (define (dump memory)
