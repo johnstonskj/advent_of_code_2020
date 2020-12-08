@@ -3,7 +3,7 @@
 (require racket/hash racket/list racket/match racket/set racket/string)
 (require "./data.rkt")
 
-(provide load-bag-data find-all-containing)
+(provide load-bag-data find-all-containing find-all-contained-within)
 
 ; ------------------------------------------------------------------------------------------
 
@@ -28,13 +28,21 @@
   (let find-more ([bag-hash (pivot-bag-data bag-data)]
                   [find-bag bag]
                   [found (set)])
-    (let* ([next (list->set (if (hash-has-key? bag-hash find-bag)
-                                (hash-ref bag-hash find-bag)
-                                '()))]
+    (let* ([next (list->set (hash-ref bag-hash find-bag '()))]
            [new (set-subtract next found)])
       (if (= (set-count new) 0)
           found
           (apply set-union found (set-map new (λ (b) (find-more bag-hash b (set-union new found)))))))))
+
+(define (find-all-contained-within bag-data bag)
+  (let find-more ([bag-hash (make-immutable-hash bag-data)]
+                  [find-bag bag])
+    (let* ([next (hash-ref bag-hash find-bag '())])
+      (foldr + 0
+             (map (λ (pair) (if (empty? pair)
+                                0
+                                (+ (first pair) (* (first pair) (find-more bag-hash (second pair))))))
+                  next)))))
 
 (define (pivot-bag-data bag-data)
   (let ([pivoted (make-hash)])

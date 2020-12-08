@@ -9,4 +9,4 @@
 
 
 (display "Number of bags contained within a shiny gold bag: ")
-;(set-count (all-contained-in bag-data "shiny gold"))
+(find-all-contained-within bag-data "shiny gold")
