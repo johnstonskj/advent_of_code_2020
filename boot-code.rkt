@@ -3,7 +3,9 @@
 (require racket/bool racket/format racket/function racket/list racket/match)
 (require "./data.rkt")
 
-(provide load-code load-and-assemble-code assemble-code dump disassemble execute log-tracer)
+(provide load-code load-and-assemble-code assemble-code
+         *instruction-size* *nop* *acc* *jmp* *err* execute
+         dump disassemble log-tracer)
 
 ; ------------------------------------------------------------------------------------------
 
@@ -60,17 +62,22 @@
 (define (disassemble-instruction instruction)
   (hash-ref *instruction->str* instruction *err-str*))
 
-; (tracefn pc instruction operand)
 (define (execute memory
-                 #:start [start 0] #:trace [tracefn #f] #:break [breakfn #f] #:limit [limit #f])
+                 #:start [start 0]
+                 #:init-acc [init-acc 0]
+                 #:trace [tracefn #f]
+                 #:break [breakfn #f]
+                 #:limit [limit #f])
   (if (and (vector? memory) (< start (vector-length memory)))
-      (let next-instruction ([pc start] [acc 0] [end (vector-length memory)] [count 0])
+      (let next-instruction ([pc start] [acc init-acc] [end (vector-length memory)] [count 0])
         (if (and (< pc end) (or (false? limit) (and (number? limit) (< count limit))))
             (let ([instruction (vector-ref memory pc)]
                   [operand (vector-ref memory (+ pc 1))])
               (when (procedure? tracefn)
-                (tracefn pc instruction operand (~r acc)))
-              (if (or (false? breakfn) (and (procedure? breakfn) (breakfn pc instruction operand)))
+                (tracefn pc instruction operand acc))
+              (if (or (false? breakfn)
+                      (and (procedure? breakfn)
+                           (breakfn pc instruction operand acc)))
                   (apply next-instruction
                          (append
                           (cond
@@ -80,8 +87,8 @@
                             [else (displayln "PANIC")
                                   (list end acc end)])
                           (list (+ count 1))))
-                  acc))
-            acc))
+                  (cons #f acc)))
+            (cons #t acc)))
       #f))
 
 (define (dump memory)
@@ -103,15 +110,14 @@
             #t))
       #f))
 
-(define (log-tracer pc instruction operand [comment #f])
+(define (log-tracer pc instruction operand acc)
   (display (~r pc #:base 16 #:min-width 4 #:pad-string "0"))
   (display ": ")
   (display (disassemble-instruction instruction))
   (display " ")
   (display (~r operand #:sign '++))
-  (when comment
-    (display " ; ")
-    (display comment))
+  (display " ; ")
+  (display (~r acc))
   (displayln "")
   #t)
 
@@ -134,4 +140,4 @@
       (assemble-code
        '("nop +0" "acc +1" "jmp +4" "acc +3" "jmp -3" "acc -99" "acc +1" "jmp -4" "acc +6"))
       #:limit 20)
-     16))))
+     '(#t . 16)))))
