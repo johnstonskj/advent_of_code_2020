@@ -8,8 +8,8 @@ My goal is to have fun, this means:
 
 * if I fall behind I'm not going to stress to catch up,
 * not trying to impress anyone, but do have friends taking part:
-  * [swaits](https://git.sr.ht/~swaits/aoc2020/tree/master)
-  * [Jenn](https://github.com/jenndox/AoC)
+  * [swaits](https://git.sr.ht/~swaits/aoc2020/tree/master) in [Rust](https://www.rust-lang.org/)
+  * [Jenn](https://github.com/jenndox/AoC) in [Rust](https://www.rust-lang.org/)
   * and a number of colleagues without public repos,
 * not optimizing for speed or other efficiency,
 * but, *maybe* for readability,
