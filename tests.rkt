@@ -13,3 +13,6 @@
 
 (require/expose "customs.rkt" (customs-tests))
 (run-tests customs-tests)
+
+(require/expose "xmas-cypher.rkt" (xmas-cypher-tests))
+(run-tests xmas-cypher-tests)
