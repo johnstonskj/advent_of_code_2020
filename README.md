@@ -29,3 +29,4 @@ The following are the day specific *model/logic* files created. I have omitted t
 7. `bags.rkt` bags within bags, within bags.
 8. `boot-code.rkt` debug simple code execution.
 9. `xmas-cypher.rkt` decode the cypher weakness!
+10. `chargers.rkt` chaining chargers together.
