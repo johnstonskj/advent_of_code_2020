@@ -27,5 +27,5 @@
                  [next-col (if (>= next-col? width)
                                (- next-col? width)
                                next-col?)])
-            (loop next-row next-col (if tree? (+ trees 1) trees)))
+            (loop next-row next-col (if tree? (add1 trees) trees)))
           trees))))

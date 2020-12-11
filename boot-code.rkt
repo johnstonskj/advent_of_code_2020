@@ -72,7 +72,7 @@
       (let next-instruction ([pc start] [acc init-acc] [end (vector-length memory)] [count 0])
         (if (and (< pc end) (or (false? limit) (and (number? limit) (< count limit))))
             (let ([instruction (vector-ref memory pc)]
-                  [operand (vector-ref memory (+ pc 1))])
+                  [operand (vector-ref memory (add1 pc))])
               (when (procedure? tracefn)
                 (tracefn pc instruction operand acc))
               (if (or (false? breakfn)
@@ -103,7 +103,7 @@
               (for ([i (in-range row-start row-end *instruction-size*)])
                 (display (~r (vector-ref memory i)  #:base 16 #:min-width 2 #:pad-string "0"))
                 (display " ")
-                (display (~r (vector-ref memory (+ i 1))  #:base 16 #:min-width 2 #:pad-string "0"))
+                (display (~r (vector-ref memory (add1 i))  #:base 16 #:min-width 2 #:pad-string "0"))
                 (display " "))
               (displayln "")
               (next-row row-end end))

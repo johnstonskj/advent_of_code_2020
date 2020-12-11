@@ -11,8 +11,13 @@
   (load-data-from file-name bag-decode))
 
 (define (bag-decode line)
-  (match-let* ([(list outer inner) (string-split (string-replace line #px"\\s+bag(s?)\\s*\\.?" "") "contain" #:trim? #t)]
-               [(list inner ...) (string-split inner "," #:trim? #t #:repeat? #t)])
+  (match-let* ([(list outer inner) (string-split (string-replace line #px"\\s+bag(s?)\\s*\\.?" "")
+                                                 "contain"
+                                                 #:trim? #t)]
+               [(list inner ...) (string-split inner
+                                               ","
+                                               #:trim? #t
+                                               #:repeat? #t)])
     (cons
      outer
      (map (λ (bag)
@@ -30,9 +35,11 @@
                   [found (set)])
     (let* ([next (list->set (hash-ref bag-hash find-bag '()))]
            [new (set-subtract next found)])
-      (if (= (set-count new) 0)
+      (if (zero? (set-count new))
           found
-          (apply set-union found (set-map new (λ (b) (find-more bag-hash b (set-union new found)))))))))
+          (apply set-union
+                 found
+                 (set-map new (λ (b) (find-more bag-hash b (set-union new found)))))))))
 
 (define (find-all-contained-within bag-data bag)
   (let find-more ([bag-hash (make-immutable-hash bag-data)]

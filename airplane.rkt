@@ -79,8 +79,8 @@
               [rows (take chars (airplane-rdiv ap))]
               [cols (drop chars (airplane-rdiv ap))])
         (make-seat ap
-                   (bsp-find rows *fore* *back* 0 (- (airplane-rows ap) 1))
-                   (bsp-find cols *left* *right* 0 (- (airplane-cols ap) 1))))))
+                   (bsp-find rows *fore* *back* 0 (sub1 (airplane-rows ap)))
+                   (bsp-find cols *left* *right* 0 (sub1 (airplane-cols ap)))))))
 
 (define (bsp-find lst low high min max)
   (if (= (length lst) 1)
@@ -88,8 +88,8 @@
           min
           max)
       (if (char=? (first lst) low)
-          (bsp-find (drop lst 1) low high min (inexact->exact (+ min (floor (/ (- max min) 2)))))
-          (bsp-find (drop lst 1) low high (inexact->exact (+ min (ceiling (/ (- max min) 2)))) max))))
+          (bsp-find (rest lst) low high min (inexact->exact (+ min (floor (/ (- max min) 2)))))
+          (bsp-find (rest lst) low high (inexact->exact (+ min (ceiling (/ (- max min) 2)))) max))))
 
 (define (seat->ticket ap seat)
   (string-join

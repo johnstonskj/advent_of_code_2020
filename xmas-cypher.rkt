@@ -44,7 +44,7 @@
       (let ([stream (new-window-stream cypher-text window-width)])
         (for/list ([w stream])
           (let ([vec (vector-take (vector-drop cypher-text (car w)) window-width)]
-                [sum (vector-ref cypher-text (+ (cdr w) 1))])
+                [sum (vector-ref cypher-text (add1 (cdr w)))])
             (cons sum (has-sum? vec sum)))))))
 
 (define (has-sum? seq sum)
