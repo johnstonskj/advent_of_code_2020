@@ -36,7 +36,7 @@
   (list->vector (load-data-from file-name string->number)))
 
 (define (load-and-decode-cypher-text file-name)
-  (cypher-decode (list->vector (load-data-from file-name identity))))
+  (cypher-decode (load-cypher-text file-name)))
 
 (define (cypher-decode cypher-text #:window-width [window-width *window-size*])
   (if (< (vector-length cypher-text) window-width)

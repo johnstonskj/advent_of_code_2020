@@ -1,6 +1,6 @@
 #lang racket/base
 
-(require racket/bool racket/file racket/list racket/string)
+(require racket/bool racket/file racket/function racket/list racket/string)
 (require data/heap)
 
 (provide load-data-from load-and-sort-data-from load-chunked-data-from)
@@ -13,7 +13,7 @@
 ;; -> list
 (define (load-chunked-data-from
          file-name
-         constructor
+         [constructor identity]
          #:to-line? [to-line? #t]
          #:sep? [sep? string-empty?])
   (map constructor
@@ -28,11 +28,11 @@
                  (next-break after (index-where after string-empty?) (list* before chunks))))))))
 
 ;; -> list
-(define (load-data-from file-name constructor)
+(define (load-data-from file-name [constructor identity])
   (map constructor (file->lines file-name)))
 
 ;; -> vector
-(define (load-and-sort-data-from file-name constructor cmp)
+(define (load-and-sort-data-from file-name [constructor identity] [cmp <])
   (let ([values (make-heap cmp)])
     ; insert each value into the heap so create a sorted structure, 
     ; cheaper than sorting a list/vector after the fact

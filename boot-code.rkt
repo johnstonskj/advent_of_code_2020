@@ -34,7 +34,7 @@
 ; ------------------------------------------------------------------------------------------
 
 (define (load-code file-name)
-  (load-data-from file-name identity))
+  (load-data-from file-name))
                        
 (define (load-and-assemble-code file-name)
   (assemble-code (load-code file-name)))

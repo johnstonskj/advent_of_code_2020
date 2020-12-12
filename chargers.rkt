@@ -27,4 +27,3 @@
              [(= 0 count) (values count result)]
              [else (values 0 (cons (add1 (apply + (range count))) result))]))))
 
-;(charger-paths '(1 1 1 3 1 1 3 1))
