@@ -1,6 +1,8 @@
 #lang racket/base
 
-(require "./passwords.rkt")
+(require racket/bool)
+
+(require "aoc.rkt" "passwords.rkt")
 
 (define (counting-policy-evaluate p password)
   (let* ([chars (filter (λ (c) (char=? c (policy-character p))) (string->list password))]
@@ -17,7 +19,7 @@
          (char=? second policy-char))))
 
 (define password-values (load-password-values "day_2_input.txt"))
-  
-(policy-evaluate-all counting-policy-evaluate password-values)
 
-(policy-evaluate-all positional-policy-evaluate password-values)
+(answer '(2 . 1) (policy-evaluate-all counting-policy-evaluate password-values) 393)
+
+(answer '(2 . 2) (policy-evaluate-all positional-policy-evaluate password-values) 690)

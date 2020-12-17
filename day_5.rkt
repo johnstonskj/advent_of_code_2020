@@ -2,7 +2,7 @@
 
 (require racket/list)
 
-(require "./airplane.rkt")
+(require "aoc.rkt" "airplane.rkt")
 
 (define ap (make-airplane 128 8))
 
@@ -10,14 +10,15 @@
 
 (define seats (map (λ (t) (seat-num (ticket->seat ap t))) tickets))
 
-(display "max ticket number: ")
-(displayln (foldr max 0 seats))
+(answer '(5 . 1) (foldr max 0 seats) 864 #:msg "max ticket number")
 
 (define (seat-pairs seats)
   (cond [(eq? seats '()) '()]
         [(< (length seats) 2) '()]
         [(cons (take seats 2) (seat-pairs (cdr seats)))]))
 
-(display "seat between: ")
-(displayln (filter (λ (p) (= (- (second p)  (first p)) 2)) (seat-pairs (sort seats <))))
+(answer '(5 . 2)
+        (filter (λ (p) (= (- (second p)  (first p)) 2)) (seat-pairs (sort seats <)))
+        '((738 740))
+        #:msg "seat between")
 

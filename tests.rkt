@@ -14,5 +14,8 @@
 (require/expose "customs.rkt" (customs-tests))
 (run-tests customs-tests)
 
+(require/expose "seating.rkt" (seating-tests))
+(run-tests seating-tests)
+
 (require/expose "xmas-cypher.rkt" (xmas-cypher-tests))
 (run-tests xmas-cypher-tests)

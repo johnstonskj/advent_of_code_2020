@@ -1,5 +1,7 @@
 #lang racket/base
 
+(require racket/list)
+
 (require "./data.rkt")
 
 (provide (struct-out policy) load-password-values policy-evaluate-all)

@@ -1,18 +1,15 @@
 #lang racket/base
   
-(require "./expenses.rkt")
+(require "aoc.rkt" "expenses.rkt")
+
+(define expenses (load-expense-values "day_1_input.txt"))
 
 (define (find-sum-of of)
-  (display "sum of ")
-  (display of)
-  (display " items ")
-  (let ([result (find-and-multiply (load-expense-values "day_1_input.txt") 2020 of)])
-  (if (list? result)
-      (displayln (foldl * 1 result))
-      (displayln "not found :("))))
+  (let ([result (find-and-multiply expenses 2020 of)])
+    (if (list? result)
+        (foldl * 1 result)
+        #f)))
 
-; Day 1, part 1
-(find-sum-of 2)
+(answer '(1 . 1) (find-sum-of 2) 988771)
 
-; Day 1, part 2
-(find-sum-of 3)
+(answer '(1 . 2) (find-sum-of 3) 171933104)

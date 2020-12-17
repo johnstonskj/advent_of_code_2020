@@ -2,7 +2,7 @@
 
 (require racket/bool racket/list racket/set)
 
-(require "./boot-code.rkt")
+(require "aoc.rkt" "boot-code.rkt")
 
 (define memory (load-and-assemble-code "day_8_input.txt"))
 
@@ -16,8 +16,9 @@
          (set-add! seen-pc pc)
          #t]))))
 
-(display "value of acumulator: ")
-(displayln (cdr (execute memory #:break (make-break-on-loop))))
+(answer '(8 . 1)
+        (cdr (execute memory #:break (make-break-on-loop)))
+        1331)
 
 (define (make-break-on-nop-jmp end jmps)
   (let ([seen-pc (mutable-set)])
@@ -36,19 +37,21 @@
          (set-add! seen-pc pc)
          #t]))))
 
-(display "value of acumulator: ")
 (define memory-size (vector-length memory))
-(let* ([jumps (mutable-set)]
-       [nop->jmp (execute memory #:break (make-break-on-nop-jmp (vector-length memory) jumps))])
-  (if (not (false? (car nop->jmp)))
-      (cdr nop->jmp)
-      (let ([jmp->nop (set-map jumps (λ (pc-acc)
-                                       (list (execute memory
-                                                      #:break (make-break-on-loop)
-                                                      #:start (+ (first pc-acc) *instruction-size*)
-                                                      #:init-acc (second pc-acc))
-                                             pc-acc)))])
-        (cdr (first (first (filter (λ (result) (not (false? (car (first result))))) jmp->nop)))))))
+(answer '(8 . 2)
+        (let* ([jumps (mutable-set)]
+               [nop->jmp (execute memory
+                                  #:break (make-break-on-nop-jmp (vector-length memory) jumps))])
+          (if (not (false? (car nop->jmp)))
+              (cdr nop->jmp)
+              (let ([jmp->nop (set-map jumps (λ (pc-acc)
+                                               (list (execute memory
+                                                              #:break (make-break-on-loop)
+                                                              #:start (+ (first pc-acc)
+                                                                         *instruction-size*)
+                                                              #:init-acc (second pc-acc))
+                                                     pc-acc)))])
+                (cdr (first (first (filter (λ (result) (not (false? (car (first result))))) jmp->nop)))))))
+        1121)
 
 
-  
