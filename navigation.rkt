@@ -107,4 +107,5 @@
     "find distance with waypoint"  
     (check-equal?
      (navigate/with-waypoint '((#\F . 10) (#\N . 3) (#\F . 7) (#\R . 90) (#\F . 11))
-                                  '(1 . 10))) 286)))
+                                  '(1 . 10))
+     286))))

@@ -11,8 +11,14 @@
 (require/expose "boot-code.rkt" (boot-code-tests))
 (run-tests boot-code-tests)
 
+(require/expose "bus-schedule.rkt" (bus-tests))
+(run-tests bus-tests)
+
 (require/expose "customs.rkt" (customs-tests))
 (run-tests customs-tests)
+
+(require/expose "navigation.rkt" (navigation-tests))
+(run-tests navigation-tests)
 
 (require/expose "seating.rkt" (seating-tests))
 (run-tests seating-tests)
