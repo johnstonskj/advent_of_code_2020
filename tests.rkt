@@ -20,6 +20,9 @@
 (require/expose "navigation.rkt" (navigation-tests))
 (run-tests navigation-tests)
 
+(require/expose "pcs.rkt" (pcs-tests))
+(run-tests pcs-tests 'verbose)
+
 (require/expose "seating.rkt" (seating-tests))
 (run-tests seating-tests)
 
