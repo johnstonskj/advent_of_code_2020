@@ -18,7 +18,7 @@
   (load-data-from file-name password-check-parse))
 
 (define (policy-evaluate-all policy-check pairs)
-  (length (filter (λ (pair) (policy-check (first pair) (second pair))) pairs)))
+  (count (λ (pair) (policy-check (first pair) (second pair))) pairs))
   
 (define (password-check-parse line)
   (let ([parsed (regexp-match #px"^(\\d+)\\-(\\d+) (.): (.+$)" line)])

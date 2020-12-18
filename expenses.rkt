@@ -17,12 +17,12 @@
         [(and (= csum sum) (= of 1)) (list* xv with)]
         ; no result here, look at the next rank
         [(> of 1)
-         (let ([result (scan-and-multiply values length sum (list* xv with) (- of 1))])
+         (let ([result (scan-and-multiply values length sum (list* xv with) (sub1 of))])
            (if (and (empty? result) (< x length))
-               (next (+ x 1))
+               (next (add1 x))
                result))]
         ; no result, but wait, there's more
-        [(< x length) (next (+ x 1))]
+        [(< x length) (next (add1 x))]
         ; no result, and nothing left here
         [else '()]))))
 
@@ -38,3 +38,9 @@
                 ; remove any value greater than limit
                 [values (vector-filter (λ (v) (<= v limit)) values)])
            (scan-and-multiply values (- (vector-length values) 1) find-sum (list) of))])) 
+
+; Cleaner, and simpler, but not optimized
+(define (brute-force-3 values find-sum)
+  (for*/first ([x values] [y values] [z values]        
+                          #:when (= find-sum (+ x y z)))
+    (* x y z)))

@@ -34,6 +34,7 @@
          (cond
            ; (Birth Year) - four digits; at least 1920 and at most 2002.
            [(string=? key "byr")
+            ; simplified: (>= 2002 (string->number value) 1920)
             (let ([year (string->number value)])
               (and (>= year 1920) (<= year 2002)))]
            ; (Issue Year) - four digits; at least 2010 and at most 2020.

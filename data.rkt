@@ -8,7 +8,7 @@
 ; ------------------------------------------------------------------------------------------
 
 (define (string-empty? s)
-  (= (string-length s) 0))
+  (not (non-empty-string? s)))
 
 ;; -> list
 (define (load-chunked-data-from
@@ -24,7 +24,7 @@
                    (map string-join (list* rest chunks))
                    (list* rest chunks))
                (let ([before (take rest break)]
-                     [after (drop rest (+ break 1))])
+                     [after (drop rest (add1 break))])
                  (next-break after (index-where after string-empty?) (list* before chunks))))))))
 
 ;; -> list

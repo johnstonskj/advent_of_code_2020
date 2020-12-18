@@ -53,7 +53,7 @@
   (if (and (vector? memory) (< start (vector-length memory)))
       (let next-instruction ([curr start] [end (vector-length memory)])
         (if (< curr end)
-            (let ([instruction (vector-ref memory curr)] [operand (vector-ref memory (+ curr 1))])
+            (let ([instruction (vector-ref memory curr)] [operand (vector-ref memory (add1 curr))])
               (log-tracer curr instruction operand)
               (next-instruction (+ curr *instruction-size*) end))
             #t))
@@ -86,7 +86,7 @@
                             [(= instruction *jmp*) (list (+ pc (* operand *instruction-size*)) acc end)]
                             [else (displayln "PANIC")
                                   (list end acc end)])
-                          (list (+ count 1))))
+                          (list (add1 count))))
                   (cons #f acc)))
             (cons #t acc)))
       #f))

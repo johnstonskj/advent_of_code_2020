@@ -14,14 +14,14 @@
     (let outer ([i 0])
       (if (>= i length)
           #f
-          (let ([result (let inner ([j (+ i 1)] [count 1] [csum (vector-ref vec i)])
+          (let ([result (let inner ([j (add1 i)] [count 1] [csum (vector-ref vec i)])
                           (cond
                             [(and (> count 1) (= csum sum)) (vector-copy vec i j)]
                             [(> csum sum) #f]
-                            [else (inner (+ j 1) (+ count 1) (+ csum (vector-ref vec j)))]
+                            [else (inner (add1 j) (add1 count) (+ csum (vector-ref vec j)))]
                             ))])
             (if (false? result)
-                (outer (+ i 1))
+                (outer (add1 i))
                 result))))))
 
 (define failure-set (sort (vector->list (find-sumands cypher-text failed-case)) <))
