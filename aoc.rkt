@@ -18,7 +18,8 @@
                           value)])
     (cond
       [(eq? expected *no-expected*)
-       (displayln response)]
+       (display response)
+       (displayln " ?")]
       [(and (not (eq? expected *no-expected*))
             (equal? value expected))
        (display response)
