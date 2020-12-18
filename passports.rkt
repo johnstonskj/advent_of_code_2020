@@ -3,7 +3,7 @@
 (require racket/list racket/string)
 (require "./data.rkt")
 
-(provide load-passport-data passport-valid?)
+(provide load-passport-data passport-has-required-keys? passport-valid?)
 
 ; ------------------------------------------------------------------------------------------
 
@@ -20,6 +20,9 @@
 (define (load-passport-data file-name)
   (load-chunked-data-from "day_4_input.txt" (λ (s) s)))
 
+(define (passport-has-required-keys? passport)
+  (string=? (passport-field-keys  (passport-fields passport)) *all-required-keys*))
+  
 (define (passport-valid? passport)
   (let ([fields (passport-fields passport)])
     (and
