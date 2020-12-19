@@ -1,10 +1,10 @@
 #lang racket/base
 
-(require racket/bool racket/list racket/string)
+(require racket/bool racket/format racket/list racket/string)
 
 (require "./data.rkt")
 
-(provide load-pcs-initialization initialize-memory)
+(provide load-pcs-initialization initialize-memory-v1 initialize-memory-v2)
 
 ; ------------------------------------------------------------------------------------------
 
@@ -41,14 +41,30 @@
 (define (mask-number masks num)
   (bitwise-and (bitwise-ior num (car masks)) (cdr masks)))
 
-(define (initialize-memory instrs)
+(define (initialize-memory-v1 instrs)
   (let ([results (make-hash)])
-    (for ([instr instrs])
-      (let ([masks (make-masks (instr-mask instr))])
-        (for ([mem (instr-mem instr)])
-          (displayln (format "~a = ~a (~a)" (car mem) (mask-number masks (cdr mem)) (cdr mem)))
-          (hash-set! results (car mem) (mask-number masks (cdr mem))))))
+    (for* ([instr instrs]
+           [mem (instr-mem instr)])
+      (hash-set! results (car mem) (mask-number (make-masks (instr-mask instr)) (cdr mem))))
     results))
+
+(define (initialize-memory-v2 instrs)
+  (let ([results (make-hash)])
+    (for* ([instr instrs]
+           [mem (instr-mem instr)]
+           [addr (all-addresses (car mem) (instr-mask instr))])
+      (hash-set! results addr (cdr mem)))
+    results))
+
+(define (all-addresses address mask)
+  (let* ([1-masked (bitwise-ior address (string->number (string-replace mask "X" "0") 2))]
+         [indexes (remove '() (combinations (indexes-of (string->list mask) #\X)))]
+         [masks (for/list ([x indexes])
+                  (apply + (map (λ (b) (arithmetic-shift 1 (- 35 b))) x)))])
+    (remove-duplicates
+     (flatten
+      (for/list ([m masks])
+        (list (bitwise-ior 1-masked m) (bitwise-xor 1-masked m)))))))
 
 ; ------------------------------------------------------------------------------------------
 
@@ -66,12 +82,30 @@
       (check-equal? (mask-number masks 0) 64)))
 
    (test-case
-    "memory init (overwrite)"
-    (let ([results (initialize-memory (list (instr "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"
-                                                   (list (cons 8 11) (cons 7 101) (cons 8 0)))))])
+    "memory init (v1)"
+    (let ([results (initialize-memory-v1 (list (instr "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X"
+                                                      (list (cons 8 11) (cons 7 101) (cons 8 0)))))])
       (check-true (hash? results))
       (check-equal? (hash-count results) 2)
       (check-equal? (hash-ref results 7) 101)
       (check-equal? (hash-ref results 8) 64)
-      (check-equal? (apply + (hash-values results)) 165)))))
+      (check-equal? (apply + (hash-values results)) 165)))
 
+   (test-case
+    "expand addresses"
+    (check-equal? (all-addresses 42 "000000000000000000000000000000X1001X")
+                  '(58 26 59 27))
+    (check-equal? (all-addresses 26 "00000000000000000000000000000000X0XX")
+                  '(26 18 24 16 27 19 25 17)))
+
+   (test-case
+    "memory init (v2)"
+    (let ([results (initialize-memory-v2 (list (instr "000000000000000000000000000000X1001X"
+                                                      (list (cons 42 100)))
+                                               (instr "00000000000000000000000000000000X0XX"
+                                                      (list (cons 26 1)))))])
+      (check-true (hash? results))
+      (check-equal? (hash-count results) 10)
+      (check-equal? (hash-ref results 16) 1)
+      (check-equal? (hash-ref results 59) 100)
+      (check-equal? (apply + (hash-values results)) 208)))))
