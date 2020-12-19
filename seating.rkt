@@ -119,4 +119,4 @@
                                  "L.LLLLL.LL"))]
            [smap (seat-map data (vector-length data) (string-length (vector-ref data 0)))])
       (check-equal? (find-stable-seating smap count-occupied-neighbors 4 #:trace? #f) 37)
-      (check-equal? (find-stable-seating smap count-occupied-visible 5 #:trace? #t) 26)))))
+      (check-equal? (find-stable-seating smap count-occupied-visible 5 #:trace? #f) 26)))))
